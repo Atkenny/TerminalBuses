@@ -1,16 +1,16 @@
-// ButtonActualizar.js
+// ButtonVerMas.js
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-const ButtonActualizar = ({ onPress }) => (
+const ButtonVerMas = ({ onPress }) => (
   <TouchableOpacity style={styles.button} onPress={onPress}>
-    <Text style={styles.buttonText}>Actualizar</Text>
+    <Text style={styles.buttonText}>Ver más</Text>
   </TouchableOpacity>
 );
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#66BB6A',  // Verde brillante pero suave
+    backgroundColor: '#42A5F5',  // Azul claro brillante
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
@@ -27,4 +27,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ButtonActualizar;
+export default ButtonVerMas;

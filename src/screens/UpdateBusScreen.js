@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Alert, ScrollView, Image, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import { obtenerBusPorId, actualizarBus } from '../services/firebaseConfig';
 import ButtonActualizar from '../components/ButtonActualizar';
 
@@ -39,6 +40,24 @@ const UpdateBusScreen = ({ route, navigation }) => {
     obtenerBus();
   }, [busId]);
 
+  const seleccionarImagen = async () => {
+    const permiso = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permiso.granted) {
+      Alert.alert("Permiso requerido", "Se necesita permiso para acceder a la galería.");
+      return;
+    }
+
+    const resultado = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!resultado.canceled) {
+      setImagenUrl(resultado.uri);
+    }
+  };
+
   const manejarActualizarBus = () => {
     const busActualizado = {
       nombre,
@@ -70,6 +89,16 @@ const UpdateBusScreen = ({ route, navigation }) => {
     >
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Actualizar Bus</Text>
+        
+        <TouchableOpacity onPress={seleccionarImagen} style={styles.imagenContainer}>
+          {imagenUrl ? (
+            <Image source={{ uri: imagenUrl }} style={styles.imagen} />
+          ) : (
+            <Text style={styles.textoSinImagen}>No hay imagen</Text>
+          )}
+          <Text style={styles.textoActualizar}>Actualizar Imagen</Text>
+        </TouchableOpacity>
+
         <TextInput
           placeholder="Nombre"
           value={nombre}
@@ -101,12 +130,6 @@ const UpdateBusScreen = ({ route, navigation }) => {
           style={styles.input}
         />
         <TextInput
-          placeholder="URL de Imagen"
-          value={imagenUrl}
-          onChangeText={setImagenUrl}
-          style={styles.input}
-        />
-        <TextInput
           placeholder="Número de Contacto"
           value={numeroContacto}
           onChangeText={setNumeroContacto}
@@ -127,7 +150,6 @@ const UpdateBusScreen = ({ route, navigation }) => {
         />
       </ScrollView>
 
-      {/* Footer con el botón de actualización */}
       <View style={styles.footer}>
         <ButtonActualizar onPress={manejarActualizarBus} />
       </View>
@@ -145,6 +167,25 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
+  },
+  imagenContainer: {
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  imagen: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+  },
+  textoSinImagen: {
+    fontSize: 16,
+    color: '#888',
+    marginBottom: 10,
+  },
+  textoActualizar: {
+    color: '#007bff',
+    textAlign: 'center',
+    marginTop: 5,
   },
   input: {
     borderWidth: 1,
